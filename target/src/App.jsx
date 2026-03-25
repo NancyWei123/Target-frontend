@@ -1,121 +1,164 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from "react";
+import { getTasks,deleteTask,updateTask } from "./api/taskApi";
+import TaskForm from "./components/TaskForm";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+
+  const openAddPanel = () => {
+    setEditingTask(null);
+    setIsOpen(true);
+  };
+
+  const openEditPanel = (task) => {
+    setEditingTask(task);
+    setIsOpen(true);
+  };
+
+  const closePanel = () => {
+    setIsOpen(false);
+  };
+  const handleDelete = async (id) => {
+    await deleteTask(id);
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+  const handleComplete = async (task) => {
+    const updated = {
+      ...task,
+      completed: true, // ✅ mark as done
+    };
+    const res = await updateTask(task.id, updated);
+    // update UI
+    setTasks(tasks.map((t) => (t.id === task.id ? res : t)));
+  };
+  useEffect(() => {
+    getTasks()
+      .then((data) => setTasks(data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-gray-100 flex justify-center items-start p-8">
+      <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-6">
+        {isOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-end">
+    
+    <div className="w-96 bg-white h-full p-6 shadow-xl">
+      
+      <h2 className="text-xl font-bold mb-4">
+        {editingTask ? "Edit Task" : "Add Task"}
+      </h2>
 
-      <div className="ticks"></div>
+      <TaskForm
+        task={editingTask}
+        onClose={closePanel}
+        setTasks={setTasks}
+        tasks={tasks}
+      />
+      
+    </div>
+  </div>
+)}
+        <div className="min-h-screen bg-gray-100 p-6">
+  
+          <h1 className="text-4xl font-bold text-center mb-8">
+            📋 Task List
+          </h1>
+          <button
+            onClick={openAddPanel}
+            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+          >
+            Add
+          </button>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <div className="w-full bg-white shadow-xl rounded-2xl p-6">
+            
+            <div className="overflow-x-auto">
+              <table className="w-full table-auto">
+                
+                {/* Header */}
+                <thead className="bg-gray-100 text-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left">ID</th>
+                    <th className="px-6 py-3 text-left">Title</th>
+                    <th className="px-6 py-3 text-left">Description</th>
+                    <th className="px-6 py-3 text-left">Due Time</th>
+                    <th className="px-6 py-3 text-left">Status</th>
+                  </tr>
+                </thead>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+                {/* Body */}
+                <tbody>
+                  {tasks.map((task) => (
+                    <tr
+                      key={task.id}
+                      className="border-t hover:bg-gray-50 transition"
+                    >
+                      <td className="px-6 py-4">{task.id}</td>
+                      <td className="px-6 py-4 font-semibold">
+                        {task.title}
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">
+                        {task.description}
+                      </td>
+                      <td className="px-6 py-4 text-blue-500">
+                        {new Date(task.dueTime).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        {task.completed ? (
+                          <span className="text-green-600 font-semibold">
+                            ✅ Done
+                          </span>
+                        ) : (
+                          <span className="text-red-500 font-semibold">
+                            ❌ Pending
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 flex gap-2">
+                        {/* Edit Button */}
+                        <button
+                          onClick={() => openEditPanel(task)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+                        >
+                          ✏️ Edit
+                        </button>
+                        </td>
+                        <td className="px-6 py-4 flex gap-2">
+                        {/* Delete Button */}
+                        <button
+                          onClick={() => handleDelete(task.id)}
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                        >
+                          ❌ Delete
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 flex gap-2">
+                       <button
+                          onClick={() => handleComplete(task)}
+                          disabled={task.completed}
+                          className={`px-3 py-1 rounded-lg text-sm text-white ${
+                            task.completed
+                              ? "bg-gray-400 cursor-not-allowed"
+                              : "bg-green-500 hover:bg-green-600"
+                          }`}
+                        >
+                          ✔️ Finish
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
-
-export default App
+export default App;
