@@ -1,164 +1,157 @@
-import { useEffect, useState } from "react";
-import { getTasks,deleteTask,updateTask } from "./api/taskApi";
-import TaskForm from "./components/TaskForm";
+import { useState } from "react";
+import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import TaskPage from "./components/TaskPage";
+import UserPage from "./components/UserPage";
+import SettingsPage from "./components/Settings";
+import StatisticPage from "./components/StatisticPage";
+function Sidebar({ onLogout }) {
+  const location = useLocation();
 
-function App() {
-  const [tasks, setTasks] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState(null);
-
-  const openAddPanel = () => {
-    setEditingTask(null);
-    setIsOpen(true);
-  };
-
-  const openEditPanel = (task) => {
-    setEditingTask(task);
-    setIsOpen(true);
-  };
-
-  const closePanel = () => {
-    setIsOpen(false);
-  };
-  const handleDelete = async (id) => {
-    await deleteTask(id);
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
-  const handleComplete = async (task) => {
-    const updated = {
-      ...task,
-      completed: true, // ✅ mark as done
-    };
-    const res = await updateTask(task.id, updated);
-    // update UI
-    setTasks(tasks.map((t) => (t.id === task.id ? res : t)));
-  };
-  useEffect(() => {
-    getTasks()
-      .then((data) => setTasks(data))
-      .catch((err) => console.error(err));
-  }, []);
+  const menuClass = (path) =>
+    `block px-4 py-3 rounded-xl transition ${
+      location.pathname === path
+        ? "bg-blue-600 text-white"
+        : "text-gray-700 hover:bg-gray-100"
+    }`;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-start p-8">
-      <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-6">
-        {isOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-end">
     
-    <div className="w-96 bg-white h-full p-6 shadow-xl">
-      
-      <h2 className="text-xl font-bold mb-4">
-        {editingTask ? "Edit Task" : "Add Task"}
-      </h2>
-
-      <TaskForm
-        task={editingTask}
-        onClose={closePanel}
-        setTasks={setTasks}
-        tasks={tasks}
-      />
-      
+    <div className="min-h-screen flex">
+  < aside className="w-64 min-h-screen bg-white border-r flex flex-col">
+    <div className="p-6 border-b">
+      <h1 className="text-2xl font-bold text-gray-800">Target</h1>
     </div>
-  </div>
-)}
-        <div className="min-h-screen bg-gray-100 p-6">
-  
-          <h1 className="text-4xl font-bold text-center mb-8">
-            📋 Task List
-          </h1>
-          <button
-            onClick={openAddPanel}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-          >
-            Add
-          </button>
 
-          <div className="w-full bg-white shadow-xl rounded-2xl p-6">
-            
-            <div className="overflow-x-auto">
-              <table className="w-full table-auto">
-                
-                {/* Header */}
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    <th className="px-6 py-3 text-left">ID</th>
-                    <th className="px-6 py-3 text-left">Title</th>
-                    <th className="px-6 py-3 text-left">Description</th>
-                    <th className="px-6 py-3 text-left">Due Time</th>
-                    <th className="px-6 py-3 text-left">Status</th>
-                  </tr>
-                </thead>
+    <nav className="flex-1 p-4 space-y-2">
+      <Link to="/index" className={menuClass("/index")}>
+        Tasks
+      </Link>
 
-                {/* Body */}
-                <tbody>
-                  {tasks.map((task) => (
-                    <tr
-                      key={task.id}
-                      className="border-t hover:bg-gray-50 transition"
-                    >
-                      <td className="px-6 py-4">{task.id}</td>
-                      <td className="px-6 py-4 font-semibold">
-                        {task.title}
-                      </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {task.description}
-                      </td>
-                      <td className="px-6 py-4 text-blue-500">
-                        {new Date(task.dueTime).toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4">
-                        {task.completed ? (
-                          <span className="text-green-600 font-semibold">
-                            ✅ Done
-                          </span>
-                        ) : (
-                          <span className="text-red-500 font-semibold">
-                            ❌ Pending
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 flex gap-2">
-                        {/* Edit Button */}
-                        <button
-                          onClick={() => openEditPanel(task)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
-                        >
-                          ✏️ Edit
-                        </button>
-                        </td>
-                        <td className="px-6 py-4 flex gap-2">
-                        {/* Delete Button */}
-                        <button
-                          onClick={() => handleDelete(task.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                        >
-                          ❌ Delete
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 flex gap-2">
-                       <button
-                          onClick={() => handleComplete(task)}
-                          disabled={task.completed}
-                          className={`px-3 py-1 rounded-lg text-sm text-white ${
-                            task.completed
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-green-500 hover:bg-green-600"
-                          }`}
-                        >
-                          ✔️ Finish
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+      <Link to="/statistics" className={menuClass("/statistics")}>
+        Statistics
+      </Link>
 
-              </table>
-            </div>
+      <Link to="/user" className={menuClass("/user")}>
+        User Profile
+      </Link>
 
-          </div>
-        </div>
-      </div>
+      <Link to="/settings" className={menuClass("/settings")}>
+        Settings
+      </Link>
+      
+    </nav>
+
+    <div className="p-4 border-t mt-auto">
+      <button
+        onClick={onLogout}
+        className="w-full bg-gray-800 hover:bg-gray-900 text-white py-3 rounded-xl"
+      >
+        Logout
+      </button>
+    </div>
+  </aside>
+
+  <main className="flex-1 p-8">
+    {/* your page content here */}
+  </main>
+</div>
+  );
+}
+
+function MainLayout({ onLogout, children }) {
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      <Sidebar onLogout={onLogout} />
+      <main className="flex-1 p-8">
+        <div className="bg-white rounded-2xl shadow-md p-6">{children}</div>
+      </main>
     </div>
   );
 }
+
+
+
+function App() {
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  const handleLogin = (newToken) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/index" replace />} />
+
+      <Route
+        path="/login"
+        element={
+          token ? (
+            <Navigate to="/index" replace />
+          ) : (
+            <LoginForm onLogin={handleLogin} />
+          )
+        }
+      />
+
+      <Route
+        path="/index"
+        element={
+          token ? (
+            <MainLayout onLogout={handleLogout}>
+              <TaskPage />
+            </MainLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/statistics"
+        element={
+          token ? (
+            <MainLayout onLogout={handleLogout}>
+              <StatisticPage />
+            </MainLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          token ? (
+            <MainLayout onLogout={handleLogout}>
+              <SettingsPage />
+            </MainLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route
+        path="/user"
+        element={
+          token ? (
+            <MainLayout onLogout={handleLogout}>
+              <UserPage />
+            </MainLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+    </Routes>
+  );
+}
+
 export default App;
