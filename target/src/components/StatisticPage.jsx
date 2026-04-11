@@ -63,21 +63,24 @@ export default function StatisticPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-40">
-        <p className="text-gray-500 text-lg">Loading statistics...</p>
+        <p className="text-gray-500 dark:text-gray-400 text-lg">
+          Loading statistics...
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 px-4">
+    <div className="max-w-6xl mx-auto mt-8 px-4 text-gray-900 dark:text-gray-100 dark:bg-gray-950 rounded-2xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Statistics</h1>
-        <p className="text-gray-500 mt-2">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+          Statistics
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">
           Overview of your task progress and priorities
         </p>
       </div>
 
-      {/* Top summary cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         <StatCard title="Total Tasks" value={stats.total} />
         <StatCard title="Completed" value={stats.completed} />
@@ -85,11 +88,9 @@ export default function StatisticPage() {
         <StatCard title="Completion Rate" value={`${stats.completionRate}%`} />
       </div>
 
-      {/* Middle section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Priority breakdown */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border border-gray-100 dark:border-gray-800">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Priority Breakdown
           </h2>
 
@@ -115,9 +116,8 @@ export default function StatisticPage() {
           </div>
         </div>
 
-        {/* Deadline insights */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border border-gray-100 dark:border-gray-800">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Deadline Insights
           </h2>
 
@@ -125,24 +125,23 @@ export default function StatisticPage() {
             <InfoBox
               title="Overdue Tasks"
               value={stats.overdue}
-              valueClass="text-red-600"
+              valueClass="text-red-600 dark:text-red-400"
             />
             <InfoBox
               title="Due in 7 Days"
               value={stats.upcoming}
-              valueClass="text-blue-600"
+              valueClass="text-blue-600 dark:text-blue-400"
             />
           </div>
         </div>
       </div>
 
-      {/* Task status overview */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border border-gray-100 dark:border-gray-800">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
           Task Status Overview
         </h2>
 
-        <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-6 overflow-hidden">
           <div
             className="bg-green-500 h-6 text-xs text-white flex items-center justify-center"
             style={{ width: `${stats.completionRate}%` }}
@@ -151,7 +150,7 @@ export default function StatisticPage() {
           </div>
         </div>
 
-        <div className="flex justify-between text-sm text-gray-500 mt-3">
+        <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mt-3">
           <span>Completed: {stats.completed}</span>
           <span>Pending: {stats.pending}</span>
         </div>
@@ -162,17 +161,19 @@ export default function StatisticPage() {
 
 function StatCard({ title, value }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6">
-      <p className="text-sm text-gray-500">{title}</p>
-      <h3 className="text-3xl font-bold text-gray-800 mt-2">{value}</h3>
+    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border border-gray-100 dark:border-gray-800">
+      <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
+      <h3 className="text-3xl font-bold text-gray-800 dark:text-white mt-2">
+        {value}
+      </h3>
     </div>
   );
 }
 
-function InfoBox({ title, value, valueClass = "text-gray-800" }) {
+function InfoBox({ title, value, valueClass = "text-gray-800 dark:text-white" }) {
   return (
-    <div className="border rounded-2xl p-5 bg-gray-50">
-      <p className="text-sm text-gray-500">{title}</p>
+    <div className="border border-gray-200 dark:border-gray-700 rounded-2xl p-5 bg-gray-50 dark:bg-gray-800">
+      <p className="text-sm text-gray-500 dark:text-gray-400">{title}</p>
       <h3 className={`text-2xl font-bold mt-2 ${valueClass}`}>{value}</h3>
     </div>
   );
@@ -183,13 +184,13 @@ function ProgressRow({ label, value, total, barClass }) {
 
   return (
     <div>
-      <div className="flex justify-between mb-1 text-sm text-gray-600">
+      <div className="flex justify-between mb-1 text-sm text-gray-600 dark:text-gray-300">
         <span>{label}</span>
         <span>
           {value} ({percent}%)
         </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
         <div
           className={`${barClass} h-3`}
           style={{ width: `${percent}%` }}

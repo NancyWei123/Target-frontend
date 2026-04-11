@@ -12,51 +12,46 @@ function Sidebar() {
   const menuClass = (path) =>
     `block px-4 py-3 rounded-xl transition ${
       location.pathname === path
-        ? "bg-blue-600 text-white"
-        : "text-gray-700 hover:bg-gray-100"
+        ? "bg-blue-600 text-white dark:bg-blue-500"
+        : "text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
     }`;
 
   return (
-    
-    <div className="min-h-screen flex">
-  < aside className="w-64 min-h-screen bg-white border-r flex flex-col">
-    <div className="p-6 border-b">
-      <h1 className="text-2xl font-bold text-gray-800">Target</h1>
-    </div>
+    <aside className="w-48 min-h-screen bg-white border-r flex flex-col shrink-0 dark:bg-gray-900 dark:border-gray-700">
+      <div className="p-6 border-b dark:border-gray-700">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Target
+        </h1>
+      </div>
 
-    <nav className="flex-1 p-4 space-y-2">
-      <Link to="/index" className={menuClass("/index")}>
-        Tasks
-      </Link>
+      <nav className="flex-1 p-4 space-y-2">
+        <Link to="/index" className={menuClass("/index")}>
+          Tasks
+        </Link>
 
-      <Link to="/statistics" className={menuClass("/statistics")}>
-        Statistics
-      </Link>
+        <Link to="/statistics" className={menuClass("/statistics")}>
+          Statistics
+        </Link>
 
-      <Link to="/user" className={menuClass("/user")}>
-        User Profile
-      </Link>
+        <Link to="/user" className={menuClass("/user")}>
+          User Profile
+        </Link>
 
-      <Link to="/settings" className={menuClass("/settings")}>
-        Settings
-      </Link>
-      
-    </nav>
-  </aside>
-
-  <main className="flex-1 p-8">
-    {/* your page content here */}
-  </main>
-</div>
+        <Link to="/settings" className={menuClass("/settings")}>
+          Settings
+        </Link>
+      </nav>
+    </aside>
   );
 }
-
 function MainLayout({ children }) {
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar/>
-      <main className="flex-1 p-8">
-        <div className="bg-white rounded-2xl shadow-md p-6">{children}</div>
+      <Sidebar />
+      <main className="flex-1 p-2">
+        <div className="bg-white rounded-xl shadow-sm p-4 min-h-screen">
+          {children}
+        </div>
       </main>
     </div>
   );

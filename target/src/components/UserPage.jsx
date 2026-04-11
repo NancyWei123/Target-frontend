@@ -37,8 +37,8 @@ export default function UserPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <h2 className="text-2xl font-semibold mb-6">User Profile</h2>
+    <div className="max-w-2xl mx-auto mt-8 dark:bg-gray-950 rounded-2xl shadow-md p-6 transition-colors duration-300">
+      <h2 className="text-2xl font-semibold mb-6 dark:text-gray-100">User Profile</h2>
 
       {editing ? (
         <UserForm
@@ -47,17 +47,17 @@ export default function UserPage() {
           onCancel={() => setEditing(false)}
         />
       ) : (
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
+        <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-200 dark:border-gray-700 transition-colors duration-300 dark:bg-gray-900">
+          <div className="flex items-center justify-between mb-6 border-b pb-4">
+            <div className="flex items-center space-x-4 dark:text-gray-300">
               <div className="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-bold">
                 {user.username?.charAt(0).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-800">
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
                   {user.username}
                 </h3>
-                <p className="text-gray-500">{user.email}</p>
+                <p className="text-gray-500 dark:text-gray-200">{user.email}</p>
               </div>
             </div>
 
@@ -71,22 +71,22 @@ export default function UserPage() {
 
           <div className="space-y-4">
             <div className="flex justify-between border-b pb-2">
-              <span className="text-gray-500">User ID</span>
-              <span className="font-medium text-gray-800">{user.id}</span>
+              <span className="text-gray-500 dark:text-gray-200">User ID</span>
+              <span className="font-medium text-gray-800 dark:text-gray-200">{user.id}</span>
             </div>
 
             <div className="flex justify-between border-b pb-2">
-              <span className="text-gray-500">Username</span>
-              <span className="font-medium text-gray-800">{user.username}</span>
+              <span className="text-gray-500 dark:text-gray-200">Username</span>
+              <span className="font-medium text-gray-800 dark:text-gray-200">{user.username}</span>
             </div>
 
             <div className="flex justify-between border-b pb-2">
-              <span className="text-gray-500">Email</span>
-              <span className="font-medium text-gray-800">{user.email}</span>
+              <span className="text-gray-500 dark:text-gray-200">Email</span>
+              <span className="font-medium text-gray-800 dark:text-gray-200">{user.email}</span>
             </div>
 
             <div className="flex justify-between border-b pb-2">
-              <span className="text-gray-500">Account Status</span>
+              <span className="text-gray-500 dark:text-gray-200">Account Status</span>
               <span className="font-medium text-green-600">
                 {user.isActive ? "Active" : "Inactive"}
               </span>
@@ -94,8 +94,8 @@ export default function UserPage() {
 
             {user.createdAt && (
               <div className="flex justify-between">
-                <span className="text-gray-500">Created At</span>
-                <span className="font-medium text-gray-800">
+                <span className="text-gray-500 dark:text-gray-200">Created At</span>
+                <span className="font-medium text-gray-800 dark:text-gray-200">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </span>
               </div>

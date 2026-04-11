@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getUser } from "../api/userApi";
+import { getUser,updateUserSettings } from "../api/userApi";
 
 export default function SettingsPage() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    darkMode: false,
-    emailNotifications: true,
-    taskReminders: true,
+    dark_mode: false,
+    email_notifications: true,
+    task_reminders: true,
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -37,18 +37,18 @@ export default function SettingsPage() {
       try {
         const userData = await getUser();
 
-        const darkModeValue = userData.darkMode ?? false;
+        const dark_modeValue = userData.dark_mode ?? false;
 
         setFormData((prev) => ({
           ...prev,
           username: userData.username || "",
           email: userData.email || "",
-          darkMode: darkModeValue,
-          emailNotifications: userData.emailNotifications ?? userData.email_notifications ?? true,
-          taskReminders: userData.taskReminders ?? userData.task_reminders ?? true,
+          dark_mode: dark_modeValue,
+          email_notifications: userData.email_notifications ?? true,
+          task_reminders: userData.task_reminders ?? true,
         }));
 
-        applyTheme(darkModeValue);
+        applyTheme(dark_modeValue);
       } catch (error) {
         console.error("Failed to fetch user:", error);
       } finally {
@@ -60,21 +60,29 @@ export default function SettingsPage() {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const { name, value, type, checked } = e.target;
 
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [name]: type === "checkbox" ? checked : value,
-      };
+  setFormData((prev) => {
+    const updated = {
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    };
 
-      if (name === "darkMode") {
-        applyTheme(checked);
-      }
+    if (name === "dark_mode") {
+      applyTheme(updated.dark_mode);
+    }
 
-      return updated;
+    console.log("Updated form data:", updated);
+
+    updateUserSettings({
+      dark_mode: updated.dark_mode,
+      email_notifications: updated.email_notifications,
+      task_reminders: updated.task_reminders,
     });
-  };
+
+    return updated;
+  });
+};
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -121,8 +129,8 @@ export default function SettingsPage() {
                 <div className="relative inline-flex items-center shrink-0 ml-4">
                   <input
                     type="checkbox"
-                    name="darkMode"
-                    checked={formData.darkMode}
+                    name="dark_mode"
+                    checked={formData.dark_mode}
                     onChange={handleChange}
                     className="sr-only peer"
                   />
@@ -143,8 +151,8 @@ export default function SettingsPage() {
                 <div className="relative inline-flex items-center shrink-0 ml-4">
                   <input
                     type="checkbox"
-                    name="emailNotifications"
-                    checked={formData.emailNotifications}
+                    name="email_notifications"
+                    checked={formData.email_notifications}
                     onChange={handleChange}
                     className="sr-only peer"
                   />
@@ -165,8 +173,8 @@ export default function SettingsPage() {
                 <div className="relative inline-flex items-center shrink-0 ml-4">
                   <input
                     type="checkbox"
-                    name="taskReminders"
-                    checked={formData.taskReminders}
+                    name="task_reminders"
+                    checked={formData.task_reminders}
                     onChange={handleChange}
                     className="sr-only peer"
                   />

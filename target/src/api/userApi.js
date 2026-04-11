@@ -100,6 +100,18 @@ export async function changePassword( passwordData) {
   return response.text();
 }
 
+export async function updateUserSettings(settings) {
+  const res = await fetch(`${BASE_URL}/settings`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(settings)
+  });
+  if (!res.ok) {
+    throw new Error("Failed to update settings");
+  }
+  return res.json();
+}
+
 // ✅ DELETE USER
 export async function deleteUser() {
   const response = await fetch(`${BASE_URL}`, {
