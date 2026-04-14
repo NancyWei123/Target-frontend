@@ -44,7 +44,7 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
         placeholder="Title"
         value={form.title}
         onChange={handleChange}
-        className="w-full border p-2 rounded"
+        className="w-full border p-2 rounded dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
         required
       />
 
@@ -53,14 +53,14 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
         placeholder="Description"
         value={form.description}
         onChange={handleChange}
-        className="w-full border p-2 rounded"
+        className="w-full border p-2 rounded dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
       />
 
       <select
         name="priority"
         value={form.priority}
         onChange={handleChange}
-        className="w-full border p-2 rounded bg-white"
+        className="w-full border p-2 rounded bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
       >
         <option value="">None</option>
         <option value="LOW">Low</option>
@@ -73,7 +73,7 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
         name="dueTime"
         value={form.dueTime}
         onChange={handleChange}
-        className="w-full border p-2 rounded"
+        className="w-full border p-2 rounded dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
       />
 
       <div className="flex justify-end gap-2">
