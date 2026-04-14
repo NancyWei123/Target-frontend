@@ -6,6 +6,7 @@ import UserPage from "./components/UserPage";
 import SettingsPage from "./components/Settings";
 import StatisticPage from "./components/StatisticPage";
 import SignupPage from "./components/SignUpPage";
+import ForgetPasswordPage from "./components/ForgetPasswordPage";
 function Sidebar() {
   const location = useLocation();
 
@@ -71,7 +72,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/index" replace />} />
       <Route path="/register" element={<SignupPage />} />
-
+      <Route path="/forget-password" element={<ForgetPasswordPage />} />
       <Route
         path="/login"
         element={

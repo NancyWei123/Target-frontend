@@ -6,6 +6,7 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
     title: task?.title || "",
     description: task?.description || "",
     dueTime: task?.dueTime || "",
+    priority: task?.priority || "",
   });
 
   const handleChange = (e) => {
@@ -38,7 +39,6 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      
       <input
         name="title"
         placeholder="Title"
@@ -55,6 +55,18 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
         onChange={handleChange}
         className="w-full border p-2 rounded"
       />
+
+      <select
+        name="priority"
+        value={form.priority}
+        onChange={handleChange}
+        className="w-full border p-2 rounded bg-white"
+      >
+        <option value="">None</option>
+        <option value="LOW">Low</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HIGH">High</option>
+      </select>
 
       <input
         type="datetime-local"
@@ -80,7 +92,6 @@ function TaskForm({ task, onClose, setTasks, tasks }) {
           {task ? "Update" : "Create"}
         </button>
       </div>
-
     </form>
   );
 }

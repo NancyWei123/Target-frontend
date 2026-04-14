@@ -89,3 +89,29 @@ export async function updateTask(id, task) {
   });
   return res.json();
 }
+
+export async function searchTasks({ keyword, startDate, endDate }) {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+
+  if (keyword && keyword.trim() !== "") {
+    params.append("keyword", keyword.trim());
+  }
+  if (startDate) {
+    params.append("startDate", startDate);
+  }
+  if (endDate) {
+    params.append("endDate", endDate);
+  }
+  const res = await fetch(`${BASE_URL}/search?${params.toString()}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to search tasks");
+  }
+  return res.json();
+}

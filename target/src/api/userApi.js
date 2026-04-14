@@ -126,3 +126,34 @@ export async function deleteUser() {
 
   return response.text();
 }
+
+export async function resetPassword({ email, code, newPassword }) {
+  const response = await fetch(`${BASE_URL}/reset-password`, {
+    method: "POST",
+    headers: getJsonHeaders(),
+    body: JSON.stringify({ email, code, newPassword }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Failed to reset password");
+  }
+
+  return response.text();
+}
+
+export async function sendVerificationCode(email) {
+  const res = await fetch(`${BASE_URL}/send-code`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email),
+  });
+
+  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(text);
+  }
+  return text;
+}

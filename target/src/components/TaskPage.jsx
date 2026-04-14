@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { getTasks, deleteTask, finishTask, undoTask } from "../api/taskApi";
+import {
+  getTasks,
+  deleteTask,
+  finishTask,
+  undoTask,
+  searchTasks,
+} from "../api/taskApi";
 import TaskForm from "./TaskForm";
 
 export default function TaskPage() {
@@ -7,8 +13,65 @@ export default function TaskPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
+  const [form, setForm] = useState({
+    keyword: "",
+    startDate: "",
+    endDate: "",
+    priority: "",
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage, setTasksPerPage] = useState(5);
+
+ useEffect(() => {
+    getTasks()
+      .then((data) => setTasks(Array.isArray(data) ? data : []))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const fetchAllTasks = async () => {
+    try {
+      const data = await getTasks();
+      setTasks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to fetch tasks:", err);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSearch = async () => {
+    try {
+      const data = await searchTasks({
+        keyword: form.keyword,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        priority: form.priority,
+      });
+
+      setTasks(Array.isArray(data) ? data : []);
+      setCurrentPage(1);
+    } catch (error) {
+      console.error("Search failed:", error);
+    }
+  };
+
+  const handleReset = async () => {
+    setForm({
+      keyword: "",
+      startDate: "",
+      endDate: "",
+      priority: "",
+    });
+    setCurrentPage(1);
+    await fetchAllTasks();
+  };
 
   const openAddPanel = () => {
     setEditingTask(null);
@@ -25,8 +88,12 @@ export default function TaskPage() {
   };
 
   const handleDelete = async (id) => {
-    await deleteTask(id);
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    try {
+      await deleteTask(id);
+      setTasks((prev) => prev.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
   };
 
   const handleToggleStatus = async (task) => {
@@ -47,12 +114,6 @@ export default function TaskPage() {
     }
   };
 
-  useEffect(() => {
-    getTasks()
-      .then((data) => setTasks(Array.isArray(data) ? data : []))
-      .catch((err) => console.error(err));
-  }, []);
-
   const getPriorityDot = (priority) => {
     switch (priority) {
       case "HIGH":
@@ -66,7 +127,7 @@ export default function TaskPage() {
     }
   };
 
-  // pagination
+  // Pagination
   const totalPages = Math.ceil(tasks.length / tasksPerPage);
   const startIndex = (currentPage - 1) * tasksPerPage;
   const endIndex = startIndex + tasksPerPage;
@@ -84,8 +145,8 @@ export default function TaskPage() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex justify-center items-start p-8 text-gray-900 dark:text-gray-100">
       {isOpen && (
-        <div className="fixed inset-0 bg-black/30 flex justify-end">
-          <div className="w-96 bg-white dark:bg-gray-900 h-full p-6 shadow-xl border-l border-gray-200 dark:border-gray-800">
+        <div className="fixed inset-0 bg-black/30 flex justify-end z-50">
+          <div className="w-96 bg-white dark:bg-gray-900 h-full p-6 shadow-xl border-l border-gray-200 dark:border-gray-800 overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
               {editingTask ? "Edit Task" : "Add Task"}
             </h2>
@@ -105,22 +166,74 @@ export default function TaskPage() {
           📋 Task List
         </h1>
 
-        <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <button
             onClick={openAddPanel}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
           >
             Add
           </button>
 
-          <div className="flex items-center gap-2">
+          <input
+            type="text"
+            name="keyword"
+            placeholder="Search by title or description..."
+            value={form.keyword}
+            onChange={handleChange}
+            className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-2 min-w-[220px]"
+          />
+
+          <input
+            type="date"
+            name="startDate"
+            value={form.startDate}
+            onChange={handleChange}
+            className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-2"
+          />
+
+          <input
+            type="date"
+            name="endDate"
+            value={form.endDate}
+            onChange={handleChange}
+            className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-2"
+          />
+
+          <select
+            name="priority"
+            value={form.priority}
+            onChange={handleChange}
+            className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-2"
+          >
+            <option value="">All Priorities</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="NONE">None</option>
+          </select>
+
+          <button
+            onClick={handleSearch}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+          >
+            Search
+          </button>
+
+          <button
+            onClick={handleReset}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm"
+          >
+            Reset
+          </button>
+
+          <div className="flex items-center gap-2 ml-auto">
             <label className="text-sm text-gray-700 dark:text-gray-300">
               Tasks per page:
             </label>
             <select
               value={tasksPerPage}
               onChange={handleTasksPerPageChange}
-              className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-1"
+              className="border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-3 py-2"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -163,7 +276,9 @@ export default function TaskPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`w-3 h-3 rounded-full ${getPriorityDot(task.priority)}`}
+                          className={`w-3 h-3 rounded-full ${getPriorityDot(
+                            task.priority
+                          )}`}
                         ></span>
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                           {task.priority || "N/A"}
@@ -232,7 +347,8 @@ export default function TaskPage() {
           {tasks.length > 0 && (
             <div className="flex justify-between items-center mt-6 flex-wrap gap-3">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Showing {startIndex + 1} to {Math.min(endIndex, tasks.length)} of {tasks.length} tasks
+                Showing {startIndex + 1} to {Math.min(endIndex, tasks.length)} of{" "}
+                {tasks.length} tasks
               </p>
 
               <div className="flex gap-2 flex-wrap">
