@@ -3,7 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 export async function getTasks() {
   const token = localStorage.getItem("token");
   console.log("Fetching tasks with token:", token);
-  const res = await fetch(BASE_URL, {
+  const res = await fetch(`${BASE_URL}/tasks`, {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -20,7 +20,7 @@ export async function getTasks() {
 export async function finishTask(id) {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/finish/${id}`, {
+  const res = await fetch(`${BASE_URL}/tasks/finish/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export async function finishTask(id) {
 export async function undoTask(id) {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}/undo/${id}`, {
+  const res = await fetch(`${BASE_URL}/tasks/undo/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ export async function undoTask(id) {
 export async function createTask(task) {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(BASE_URL, {
+  const res = await fetch(`${BASE_URL}/tasks`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -68,7 +68,7 @@ export async function createTask(task) {
 // DELETE task
 export async function deleteTask(id) {
   const token = localStorage.getItem("token");
-  await fetch(`${BASE_URL}/${id}`, {
+  await fetch(`${BASE_URL}/tasks/${id}`, {
     method: "DELETE",
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -79,7 +79,7 @@ export async function deleteTask(id) {
 // UPDATE task
 export async function updateTask(id, task) {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${BASE_URL}/${id}`, {
+  const res = await fetch(`${BASE_URL}/tasks/${id}`, {
     method: "PUT",
     headers: {
       "Authorization": `Bearer ${token}`,

@@ -17,7 +17,7 @@ function getJsonHeaders() {
 
 // ✅ REGISTER
 export async function registerUser(user) {
-  const response = await fetch(`${BASE_URL}/register`, {
+  const response = await fetch(`${BASE_URL}/users/register`, {
     method: "POST",
     headers: getJsonHeaders(),
     body: JSON.stringify(user),
@@ -33,7 +33,7 @@ export async function registerUser(user) {
 
 // ✅ LOGIN
 export async function loginUser(email, password) {
-  const response = await fetch(`${BASE_URL}/login`, {
+  const response = await fetch(`${BASE_URL}/users/login`, {
     method: "POST",
     headers: getJsonHeaders(),
     body: JSON.stringify({
@@ -55,7 +55,7 @@ export async function loginUser(email, password) {
 
 // ✅ GET USER INFO
 export async function getUser() {
-  const response = await fetch(`${BASE_URL}`, {
+  const response = await fetch(`${BASE_URL}/users`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
@@ -70,7 +70,7 @@ export async function getUser() {
 
 // ✅ UPDATE USER INFO
 export async function updateUser(updatedUser) {
-  const response = await fetch(`${BASE_URL}`, {
+  const response = await fetch(`${BASE_URL}/users`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(updatedUser),
@@ -86,7 +86,7 @@ export async function updateUser(updatedUser) {
 
 // ✅ CHANGE PASSWORD
 export async function changePassword( passwordData) {
-  const response = await fetch(`${BASE_URL}/password`, {
+  const response = await fetch(`${BASE_URL}/users/password`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(passwordData),
@@ -101,7 +101,7 @@ export async function changePassword( passwordData) {
 }
 
 export async function updateUserSettings(settings) {
-  const res = await fetch(`${BASE_URL}/settings`, {
+  const res = await fetch(`${BASE_URL}/users/settings`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(settings)
@@ -114,7 +114,7 @@ export async function updateUserSettings(settings) {
 
 // ✅ DELETE USER
 export async function deleteUser() {
-  const response = await fetch(`${BASE_URL}`, {
+  const response = await fetch(`${BASE_URL}/users`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
@@ -128,7 +128,7 @@ export async function deleteUser() {
 }
 
 export async function resetPassword({ email, code, newPassword }) {
-  const response = await fetch(`${BASE_URL}/reset-password`, {
+  const response = await fetch(`${BASE_URL}/users/reset-password`, {
     method: "POST",
     headers: getJsonHeaders(),
     body: JSON.stringify({ email, code, newPassword }),
@@ -143,7 +143,7 @@ export async function resetPassword({ email, code, newPassword }) {
 }
 
 export async function sendVerificationCode(email) {
-  const res = await fetch(`${BASE_URL}/send-code`, {
+  const res = await fetch(`${BASE_URL}/users/send-code`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
