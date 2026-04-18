@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [react()],
   preview: {
     host: '0.0.0.0',
-    allowedHosts: ['target-frontend-9w3a.onrender.com'],
+    allowedHosts: [
+      'target-frontend-9w3a.onrender.com',
+      'target.nancywei.online',
+    ],
   },
 })
